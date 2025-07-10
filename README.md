@@ -1,2 +1,0 @@
-# CogniQ
-G7_CPE106L-4_E03 CogniQ
