@@ -3,7 +3,6 @@ from PIL import Image, ImageTk
 import matplotlib.pyplot as plt
 import tkinter.messagebox as msgbox
 
-# Sample journal and mood data
 sample_journal_entries = [
     "I felt stressed today because of deadlines.",
     "I had a great day at work!",
@@ -17,7 +16,6 @@ sample_mood_data = {
     "2025-07-09": 8
 }
 
-# === Admin Dashboard GUI with Background Image ===
 class AdminDashboard(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -48,7 +46,6 @@ class AdminDashboard(ctk.CTk):
         y_start = 180
         y_gap = 100
 
-        # Button styling
         button_style = {
             "fg_color": "#62bda6",
             "corner_radius": 30,
@@ -57,7 +54,6 @@ class AdminDashboard(ctk.CTk):
             "font": ("Arial", 20)
         }
 
-        # Buttons overlaid on the background
         self.journal_btn = ctk.CTkButton(
             self, text="📔 View Journal Entries",
             command=self.view_journal, **button_style
@@ -82,7 +78,6 @@ class AdminDashboard(ctk.CTk):
         )
         self.graph_btn.place(x=x_start, y=y_start + 3 * y_gap)
 
-    # === Functional Logic ===
 
     def view_journal(self):
         if not sample_journal_entries:
@@ -131,8 +126,6 @@ class AdminDashboard(ctk.CTk):
             keywords[word] = keywords.get(word, 0) + 1
         return dict(sorted(keywords.items(), key=lambda x: x[1], reverse=True)[:10])
 
-
-# === Main entry ===
 if __name__ == "__main__":
     app = AdminDashboard()
     app.mainloop()
