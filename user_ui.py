@@ -268,4 +268,3 @@ def main(page: ft.Page):
 
 # To run the Flet application:
 # ft.app(target=main)
-# For web, use: ft.app(target=main, view=ft.WEB_BROWSER)
