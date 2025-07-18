@@ -1,5 +1,6 @@
 # CogniQ
 G7_CPE106L-4_E03 CogniQ
+by De Jesus, Rei Bryan Jericho; Duque, Joseph Emmanuel; Jasmin, Jazmin Taye
 
 CogniQ is a Python-built application that enhances mental wellness through its features 
 of mood tracking, journaling, and local support resources to support the community for 
@@ -19,3 +20,6 @@ journal inputs for data gathering
 Matplotlib to track their well-being on a particular day.
 5. Provides Resources and Insights - Admins will provide resources and insights 
 based on the user's journal inputs to aid them in their journey.
+
+# Prerequisites
+CogniQ requires such as 
