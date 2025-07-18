@@ -77,7 +77,7 @@ def main(page: ft.Page):
                 height=200,
                 width=page.window_width * 0.8, # Make it responsive
                 padding=10,
-                border=ft.border.all(1, ft.colors.GREY_300),
+                border=ft.border.all(1, ft.colors.GREEN_300),
                 border_radius=ft.border_radius.all(10),
                 expand=True
             )
@@ -113,7 +113,7 @@ def main(page: ft.Page):
                     content=ft.Container(
                         content=ft.Column(
                             [
-                                ft.Text(f"[{timestamp}]", size=12, color=ft.colors.GREY_600),
+                                ft.Text(f"[{timestamp}]", size=12, color=ft.colors.GREEN_600),
                                 ft.Text(entry_text, size=14, selectable=True),
                             ],
                             spacing=5
@@ -147,7 +147,7 @@ def main(page: ft.Page):
                 height=250,
                 width=page.window_width * 0.8, # Make it responsive
                 padding=10,
-                border=ft.border.all(1, ft.colors.GREY_300),
+                border=ft.border.all(1, ft.colors.GREEN_300),
                 border_radius=ft.border_radius.all(10),
                 expand=True
             )
@@ -236,7 +236,7 @@ def main(page: ft.Page):
                 ft.AppBar(
                     title=ft.Text("Mental Health Tracker", weight=ft.FontWeight.BOLD),
                     center_title=True,
-                    bgcolor=ft.colors.BLUE_GREY_700,
+                    bgcolor=ft.colors.GREEN_GREY_700,
                     color=ft.colors.WHITE,
                     actions=[
                         ft.IconButton(ft.icons.SETTINGS, tooltip="Settings"),
