@@ -255,5 +255,5 @@ async def get_user_insights(user_id: str):
 # Save this code as, e.g., `main.py`.
 # Install FastAPI and Uvicorn: `pip install fastapi "uvicorn[standard]"`
 # Run from your terminal: `uvicorn main:app --reload`
-# This will start the server, typically on <tba
-# You can then access the interactive API documentation at <tba
+# This will start the server, typically on http://127.0.0.1:8000/docs
+# You can then access the interactive API documentation at http://127.0.0.1:8000/docs
