@@ -1,5 +1,4 @@
-from datetime import date
-from data_analysis import DataAnalyzer
+from analysis.data_analysis import DataAnalyzer
 
 # Sample dummy data
 mood_data = [
@@ -15,6 +14,7 @@ journal_data = [
     {"date": "2025-07-02", "text": "Reflected on my goals."}
 ]
 
+# Run analysis
 analyzer = DataAnalyzer(mood_data, journal_data)
 analyzer.mood_trend()
 analyzer.journal_frequency()
