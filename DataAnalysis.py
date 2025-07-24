@@ -64,7 +64,7 @@ class DataAnalyzer:
         print(f"📊 Estimated Wellness Score: {wellness:.2f}")
 
 
-# ✅ Public Sentiment Analysis API
+# Public Sentiment Analysis API
 def analyze_sentiment(text):
     url = "https://sentim-api.herokuapp.com/api/v1/"
     headers = {"Accept": "application/json", "Content-Type": "application/json"}
@@ -83,7 +83,7 @@ def analyze_sentiment(text):
         return None, None
 
 
-# ✅ Sample Run for Testing
+# Sample Run for Testing
 if __name__ == "__main__":
     print("🔍 Running Sample Mood and Journal Analysis...\n")
 
