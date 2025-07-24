@@ -1,0 +1,270 @@
+import flet as ft
+import datetime
+
+def main(page: ft.Page):
+    """
+    Main function to build the Flet application GUI for the Community Mental Health Tracker.
+    """
+    page.title = "Community Mental Health Tracker"
+    page.vertical_alignment = ft.CrossAxisAlignment.START
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.window_width = 800
+    page.window_height = 600
+    page.window_min_width = 700
+    page.window_min_height = 500
+    page.theme_mode = ft.ThemeMode.LIGHT # Default theme mode
+
+    # Placeholder for user ID (would come from authentication in a real app)
+    user_id = "user123" # This would be dynamically set after user authentication
+
+    # --- Data Storage Placeholders (In a real app, this would interact with SQLite/FastAPI) ---
+    mood_logs = []
+    journal_entries = []
+
+    # --- UI Components ---
+
+    # Mood Tracker Tab Content
+    mood_slider = ft.Slider(
+        min=1,
+        max=5,
+        divisions=4,
+        label="{value}",
+        value=3,
+        width=300,
+        on_change_end=lambda e: print(f"Mood selected: {int(e.control.value)}") # For debugging
+    )
+    mood_feedback_text = ft.Text("Rate your mood (1: Very Low, 5: Very High)", size=16)
+    mood_log_display = ft.Column([], scroll=ft.ScrollMode.ADAPTIVE)
+
+    def log_mood(e):
+        """
+        Handles logging a new mood entry.
+        In a real app, this would send data to the FastAPI backend.
+        """
+        current_mood = int(mood_slider.value)
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        mood_logs.append({"mood": current_mood, "timestamp": timestamp, "user_id": user_id})
+        mood_log_display.controls.insert(
+            0, # Insert at the beginning to show latest first
+            ft.Text(f"[{timestamp}] Mood: {current_mood} {'⭐' * current_mood}", size=14)
+        )
+        page.update()
+        # In a real app: Call FastAPI endpoint to save mood
+        print(f"Logged mood: {current_mood} at {timestamp}")
+        # Optionally, clear or reset the slider after logging
+        # mood_slider.value = 3 # Reset to default
+
+    mood_tracker_content = ft.Column(
+        [
+            ft.Text("Track Your Mood", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+            mood_feedback_text,
+            mood_slider,
+            ft.ElevatedButton("Log Mood", on_click=log_mood, icon=ft.icons.EMOJI_EMOTIONS),
+            ft.Divider(),
+            ft.Text("Recent Mood Logs:", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=mood_log_display,
+                height=200,
+                width=page.window_width * 0.8, # Make it responsive
+                padding=10,
+                border=ft.border.all(1, ft.colors.GREEN_300),
+                border_radius=ft.border_radius.all(10),
+                expand=True
+            )
+        ],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=20,
+        expand=True
+    )
+
+    # Journaling Tab Content
+    journal_entry_field = ft.TextField(
+        label="Write your journal entry here...",
+        multiline=True,
+        min_lines=5,
+        max_lines=10,
+        expand=True,
+        border_radius=ft.border_radius.all(10)
+    )
+    journal_log_display = ft.Column([], scroll=ft.ScrollMode.ADAPTIVE)
+
+    def save_journal_entry(e):
+        """
+        Handles saving a new journal entry.
+        In a real app, this would send data to the FastAPI backend.
+        """
+        entry_text = journal_entry_field.value.strip()
+        if entry_text:
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            journal_entries.append({"entry": entry_text, "timestamp": timestamp, "user_id": user_id})
+            journal_log_display.controls.insert(
+                0, # Insert at the beginning to show latest first
+                ft.Card(
+                    content=ft.Container(
+                        content=ft.Column(
+                            [
+                                ft.Text(f"[{timestamp}]", size=12, color=ft.colors.GREEN_600),
+                                ft.Text(entry_text, size=14, selectable=True),
+                            ],
+                            spacing=5
+                        ),
+                        padding=10,
+                    ),
+                    elevation=2,
+                    margin=ft.margin.only(bottom=10)
+                )
+            )
+            journal_entry_field.value = "" # Clear the field
+            page.update()
+            # In a real app: Call FastAPI endpoint to save journal entry
+            print(f"Saved journal entry at {timestamp}")
+        else:
+            # Show a simple message if the entry is empty
+            page.snack_bar = ft.SnackBar(ft.Text("Journal entry cannot be empty!"), open=True)
+            page.update()
+
+
+    journaling_content = ft.Column(
+        [
+            ft.Text("Your Daily Journal", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+            journal_entry_field,
+            ft.ElevatedButton("Save Entry", on_click=save_journal_entry, icon=ft.icons.BOOKMARK_ADD),
+            ft.Divider(),
+            ft.Text("Recent Journal Entries:", size=18, weight=ft.FontWeight.BOLD),
+            ft.Container(
+                content=journal_log_display,
+                height=250,
+                width=page.window_width * 0.8, # Make it responsive
+                padding=10,
+                border=ft.border.all(1, ft.colors.GREEN_300),
+                border_radius=ft.border_radius.all(10),
+                expand=True
+            )
+        ],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=20,
+        expand=True
+    )
+
+    # Insights Tab Content
+    # This section would display Matplotlib plots and recommendations
+    insights_content = ft.Column(
+        [
+            ft.Text("Your Wellness Insights", size=24, weight=ft.FontWeight.BOLD),
+            ft.Divider(),
+            ft.Text("Mood Trends Over Time (Matplotlib Integration Here)", size=18),
+            ft.Container(
+                content=ft.Image(
+                    src="https://placehold.co/400x200/cccccc/333333?text=Mood+Trend+Graph",
+                    width=400,
+                    height=200,
+                    fit=ft.ImageFit.CONTAIN
+                ),
+                alignment=ft.alignment.center,
+                margin=ft.margin.symmetric(vertical=10)
+            ),
+            ft.Text("Journaling Frequency (Matplotlib Integration Here)", size=18),
+            ft.Container(
+                content=ft.Image(
+                    src="https://placehold.co/400x150/cccccc/333333?text=Journal+Frequency+Graph",
+                    width=400,
+                    height=150,
+                    fit=ft.ImageFit.CONTAIN
+                ),
+                alignment=ft.alignment.center,
+                margin=ft.margin.symmetric(vertical=10)
+            ),
+            ft.Text("Personalized Coping Strategies & Recommendations:", size=18, weight=ft.FontWeight.BOLD),
+            ft.Card(
+                content=ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Text("Based on your recent mood patterns, consider practicing mindfulness exercises for 15 minutes daily.", size=14),
+                            ft.Text("Your journaling frequency is consistent, which is great for self-reflection!", size=14),
+                            ft.Text("Explore local support resources: [Link to WHO/Local Org API content]", size=14, selectable=True),
+                        ],
+                        spacing=10
+                    ),
+                    padding=20,
+                ),
+                elevation=3,
+                width=page.window_width * 0.8,
+                border_radius=ft.border_radius.all(10)
+            )
+        ],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=20,
+        scroll=ft.ScrollMode.ADAPTIVE,
+        expand=True
+    )
+
+    # --- Main Layout with Navigation Bar ---
+    def change_tab(e):
+        """
+        Handles changing the displayed content based on selected tab.
+        """
+        selected_index = e.control.selected_index
+        if selected_index == 0:
+            content_area.content = mood_tracker_content
+        elif selected_index == 1:
+            content_area.content = journaling_content
+        elif selected_index == 2:
+            content_area.content = insights_content
+        page.update()
+
+    content_area = ft.Container(
+        content=mood_tracker_content, # Default content
+        expand=True,
+        alignment=ft.alignment.top_center,
+        padding=20
+    )
+
+    page.add(
+        ft.Column(
+            [
+                ft.AppBar(
+                    title=ft.Text("Mental Health Tracker", weight=ft.FontWeight.BOLD),
+                    center_title=True,
+                    bgcolor=ft.colors.GREEN_GREY_700,
+                    color=ft.colors.WHITE,
+                    actions=[
+                        ft.IconButton(ft.icons.SETTINGS, tooltip="Settings"),
+                        ft.IconButton(ft.icons.HELP_OUTLINE, tooltip="Help"),
+                    ],
+                ),
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Text(f"Welcome, {user_id}!", size=16, weight=ft.FontWeight.W_500),
+                            ft.NavigationBar(
+                                selected_index=0,
+                                on_change=change_tab,
+                                destinations=[
+                                    ft.NavigationDestination(icon=ft.icons.EMOJI_EMOTIONS, label="Mood Tracker"),
+                                    ft.NavigationDestination(icon=ft.icons.BOOK, label="Journaling"),
+                                    ft.NavigationDestination(icon=ft.icons.INSIGHTS, label="Insights"),
+                                ],
+                                bgcolor=ft.colors.BLUE_GREY_100,
+                                elevation=5,
+                            ),
+                        ],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=15
+                    ),
+                    padding=ft.padding.only(top=10, bottom=10),
+                    width=page.window_width,
+                    alignment=ft.alignment.center
+                ),
+                content_area,
+            ],
+            expand=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=0 # Remove default spacing between columns
+        )
+    )
+    page.update()
+
+# To run the Flet application:
+# ft.app(target=main)
