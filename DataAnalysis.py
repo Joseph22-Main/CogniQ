@@ -3,14 +3,40 @@ from collections import defaultdict
 from datetime import datetime
 import requests
 
+# Mood word-to-number map
+MOOD_MAP = {
+    "very happy": 5, "happy": 4,
+    "neutral": 3,
+    "sad": 2, "very sad": 1
+}
+
 class DataAnalyzer:
-    def __init__(self, mood_data, journal_data):
-        self.mood_data = mood_data
-        self.journal_data = journal_data
+    def __init__(self, mood_data, journal_data, user_id):
+        self.user_id = user_id
+        self.mood_data = self._filter_and_validate(mood_data)
+        self.journal_data = self._filter_and_validate(journal_data)
+
+    def _filter_and_validate(self, data):
+        valid_entries = []
+        for entry in data:
+            try:
+                if entry['user_id'] != self.user_id:
+                    continue
+                # Validate date
+                datetime.strptime(entry['date'], "%Y-%m-%d")
+
+                # Convert letter mood to number
+                if 'mood' in entry and isinstance(entry['mood'], str):
+                    mood_str = entry['mood'].strip().lower()
+                    entry['mood'] = MOOD_MAP.get(mood_str, 3)  # default to neutral (3)
+
+                valid_entries.append(entry)
+            except Exception as e:
+                print(f"Skipping invalid entry: {entry} - Reason: {e}")
+        return valid_entries
 
     def mood_trend(self):
         daily_moods = defaultdict(list)
-
         for entry in self.mood_data:
             daily_moods[entry['date']].append(entry['mood'])
 
@@ -19,7 +45,7 @@ class DataAnalyzer:
 
         plt.figure(figsize=(8, 5))
         plt.bar(dates, avg_moods, color='skyblue')
-        plt.title('📈 Average Daily Mood')
+        plt.title('Average Daily Mood')
         plt.xlabel('Date')
         plt.ylabel('Mood (1–5)')
         plt.ylim(1, 5)
@@ -29,7 +55,6 @@ class DataAnalyzer:
 
     def journal_frequency(self):
         journal_count = defaultdict(int)
-
         for entry in self.journal_data:
             journal_count[entry['date']] += 1
 
@@ -38,7 +63,7 @@ class DataAnalyzer:
 
         plt.figure(figsize=(8, 5))
         plt.bar(dates, frequencies, color='orange')
-        plt.title('📘 Journal Entry Frequency')
+        plt.title('Journal Entry Frequency')
         plt.xlabel('Date')
         plt.ylabel('Number of Entries')
         plt.xticks(rotation=45)
@@ -46,69 +71,47 @@ class DataAnalyzer:
         plt.show()
 
     def wellness_score(self):
-        if not self.mood_data and not self.journal_data:
-            print("⚠️ Not enough data to compute wellness score.")
-            return
-
-        mood_avg = (
-            sum(entry['mood'] for entry in self.mood_data) / len(self.mood_data)
-            if self.mood_data else 0
-        )
-        journal_days = set(entry['date'] for entry in self.journal_data)
-        journal_avg = (
-            len(self.journal_data) / len(journal_days)
-            if journal_days else 0
-        )
+        mood_avg = sum(entry['mood'] for entry in self.mood_data) / len(self.mood_data) if self.mood_data else 0
+        journal_avg = len(self.journal_data) / len(set(entry['date'] for entry in self.journal_data)) if self.journal_data else 0
 
         wellness = (mood_avg * 0.7) + (journal_avg * 0.3)
-        print(f"📊 Estimated Wellness Score: {wellness:.2f}")
+        print(f"📊 Estimated Wellness Score for {self.user_id}: {wellness:.2f}")
 
-
-# Public Sentiment Analysis API
+# Optional: Sentiment API Function
 def analyze_sentiment(text):
     url = "https://sentim-api.herokuapp.com/api/v1/"
     headers = {"Accept": "application/json", "Content-Type": "application/json"}
     data = {"text": text}
-
-    try:
-        response = requests.post(url, json=data, headers=headers)
-        response.raise_for_status()
-        result = response.json()["result"]
-        sentiment = result["type"]
-        polarity = result["polarity"]
-        print(f"🧠 Sentiment: {sentiment.capitalize()} (Polarity: {polarity:.2f})")
+    response = requests.post(url, json=data, headers=headers)
+    if response.status_code == 200:
+        sentiment = response.json()["result"]["type"]
+        polarity = response.json()["result"]["polarity"]
+        print(f"Sentiment: {sentiment}, Polarity: {polarity}")
         return sentiment, polarity
-    except requests.exceptions.RequestException:
-        print("❌ Failed to connect to the Sentiment API.")
+    else:
+        print("API request failed.")
         return None, None
 
-
-# Sample Run for Testing
+# Example usage
 if __name__ == "__main__":
-    print("🔍 Running Sample Mood and Journal Analysis...\n")
-
-    # Example input data
+    # Example data for testing
     mood_data = [
-        {'date': '2025-07-21', 'mood': 4},
-        {'date': '2025-07-21', 'mood': 3},
-        {'date': '2025-07-22', 'mood': 5},
+        {"user_id": "charleigh", "date": "2025-07-21", "mood": "happy"},
+        {"user_id": "charleigh", "date": "2025-07-22", "mood": "sad"},
+        {"user_id": "charleigh", "date": "invalid-date", "mood": "neutral"},  # This will be skipped
+        {"user_id": "anotheruser", "date": "2025-07-22", "mood": 4},  # Filtered by user_id
     ]
 
     journal_data = [
-        {'date': '2025-07-21', 'entry': 'Had a great day at school.'},
-        {'date': '2025-07-22', 'entry': 'Finished my tasks ahead of schedule.'},
-        {'date': '2025-07-22', 'entry': 'I feel a bit tired though.'},
+        {"user_id": "charleigh", "date": "2025-07-21", "entry": "Today was good."},
+        {"user_id": "charleigh", "date": "2025-07-22", "entry": "Feeling low."},
     ]
 
-    analyzer = DataAnalyzer(mood_data, journal_data)
+    analyzer = DataAnalyzer(mood_data, journal_data, user_id="charleigh")
     analyzer.mood_trend()
     analyzer.journal_frequency()
     analyzer.wellness_score()
 
-    # Sentiment check
-    print("\n💬 Sentiment Analysis")
-    user_input = input("Enter a journal or mood description: ").strip()
-    if user_input:
-        analyze_sentiment(user_input)
-    else:
-        print("⚠️ No input provided for sentiment analysis.")
+    # Run sentiment analysis if you want
+    text = input("Write a journal line: ")
+    analyze_sentiment(text)
