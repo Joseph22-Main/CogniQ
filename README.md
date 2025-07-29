@@ -22,4 +22,4 @@ Matplotlib to track their well-being on a particular day.
 based on the user's journal inputs to aid them in their journey.
 
 # Prerequisites
-CogniQ requires such as 
+CogniQ requires/used packages such as flet, sqlite3, matplotlib, datetime, random, os
