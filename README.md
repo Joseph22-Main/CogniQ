@@ -42,7 +42,7 @@ admin_panel.py – UI for admin in applying features such as view journals, mood
 user
 
 ***Controller***
-main.py – central controller of the program which determines the user status (admin or login) based on the email domains
+main.py – central controller of the program which determines the user status (admin or login) based on the email domains (only run this file if you have downloaded and inserted all the needed files and assests and insert them inside a folder)
 
 # Tutorials to Access
 For tutorials kindly check the tutorial folder if you want to access and try CogniQ
