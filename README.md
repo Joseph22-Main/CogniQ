@@ -18,8 +18,33 @@ journal based on their experience today.
 journal inputs for data gathering
 4. Graph Visualization (Admins only) - Admins can view the user's data through 
 Matplotlib to track their well-being on a particular day.
-5. Provides Resources and Insights - Admins will provide resources and insights 
-based on the user's journal inputs to aid them in their journey.
+5. Provides Resources and Insights - The program provide resources and insights 
+based on the user's journal and mood inputs  to aid them in their journey.
 
 # Prerequisites
 CogniQ requires/used packages such as flet, sqlite3, matplotlib, datetime, random, os
+It is highly recommended to download python (latest version 3.13.5; link: https://www.python.org/downloads/), or visual studio code(link: https://code.visualstudio.com/) to see the full codes of the project, if you are going to access or run CogniQ
+
+***Other downloads***
+Git (link: https://git-scm.com/downloads) - to clone the repository and store the files, without the necessity to download the files one by one
+
+# MVC Layout
+***Model***
+database.py – administers the interactions with cogniq_database.db for storing and retrieving
+information such as user, mood, admin, etc.
+recommendation.py – provide mental health recommendations according to the mood tracker
+graph.py – visual representations and stores as images
+
+***Views***
+auth.py - Authentication FletUI, which shows first in the program for login and signup
+user_panel.py – UI for users in applying the features of mood, journal, and view inputs.
+admin_panel.py – UI for admin in applying features such as view journals, mood, and graphs of the
+user
+
+***Controller***
+main.py – central controller of the program which determines the user status (admin or login) based on the email domains
+
+# Tutorials to Access
+For tutorials kindly check the tutorial folder if you want to access and try CogniQ
+
+Once again thank you for accessing CogniQ as your mental health tracker
