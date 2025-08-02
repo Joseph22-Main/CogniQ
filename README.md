@@ -45,6 +45,6 @@ user
 main.py – central controller of the program which determines the user status (admin or login) based on the email domains (only run this file if you have downloaded and inserted all the needed files and assests and insert them inside a folder)
 
 # Tutorials to Access
-For tutorials kindly check the tutorial folder if you want to access and try CogniQ
+For tutorials kindly check the COGNIQ_TUTORIALS.pdf if you want to access and try CogniQ
 
 Once again thank you for accessing CogniQ as your mental health tracker
